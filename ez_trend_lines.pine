@@ -1,6 +1,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Based on script of © LonesomeTheBlue
 // Trend Lines for RSI, CCI, Momentum, OBV
+// By ezPappi https://twitter.com/ezPappi
 // @version=1
 study("ezTrend Lines", overlay=false, max_bars_back = 4000)
 indi = input(defval = 'RSI', title = 'Indicator', options = ['RSI', 'CCI', 'OBV', 'Momentum'])
