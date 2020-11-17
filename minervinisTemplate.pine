@@ -1,0 +1,36 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Show when the stock is according to Mark Minervinis template.
+// @version=1
+study(title="Minervinis Template", shorttitle="Minervini", overlay=true, max_bars_back = 4000)
+
+// Define conditions for Minervini’s rules
+sma50=sma(close,50)
+sma150=sma(close,150)
+sma200=sma(close,200)
+trend30days=sma(close[22],200) < sma(close[11],200) and  sma(close[11],200) < sma(close,200)
+lowest30=lowest(low, 250)*1.3
+highest75=highest(high, 250)*0.75
+
+step1 = close > sma150 and close > sma200
+step2 = sma150 > sma200
+step3 = trend30days
+step4 = sma50 > sma150 and sma50 > sma200
+step5 = close > sma50
+step6 = close > lowest30
+step7 = close > highest75
+
+up = step1 and step2 and step3 and step4 and step5 and step6 and step7
+COL = up ? #00FF00 : #FF0000
+
+bgcolor(color=COL, transp=95)
+plot(sma50, color=blue, style=line, title="SMA50", linewidth=1)
+plot(sma150, color=orange,  style=line, title="SMA150", linewidth=1)
+plot(sma200, color=red, style=line, title="SMA200", linewidth=1)
+plot(highest75, color=green, style=line, title="Highest 75", linewidth=1)
+plot(lowest30,color=red, style=line, title="Lowest 30", linewidth=1)
+plot(close, color=COL, title="Candle Band", linewidth=15,transp=80)
+plot(sma50, color=blue, style=line, title="SMA50", linewidth=1)
+plot(sma150, color=orange, style=line, title="SMA150", linewidth=1)
+plot(sma200, color=red, style=line, title="SMA200", linewidth=1)
+plot(highest75, color=green, style=line, title="Highest 75", linewidth=1)
+plot(lowest30,color=red, style=line, title="Lowest 30", linewidth=1)
