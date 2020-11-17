@@ -1,5 +1,6 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Show when the stock is according to Mark Minervinis template.
+// By ezPappi https://twitter.com/ezPappi
 // @version=1
 study(title="Minervinis Template", shorttitle="Minervini", overlay=true, max_bars_back = 4000)
 
