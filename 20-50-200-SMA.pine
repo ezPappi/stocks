@@ -1,0 +1,20 @@
+
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Based on script of © LonesomeTheBlue
+// Show 20, 50 and 200 SMA
+// By ezPappi https://twitter.com/ezPappi
+// @version=0.1
+study(title="20-50-200-SMA", overlay=true)
+src = input(close, title="Source")
+len0 = input(20, minval=1, title="#1 20")
+out0 = sma(src, len0)
+len1 = input(50, minval=1, title="#2 50")
+out1 = sma(src, len1)
+len2 = input(200, minval=1, title="#3 200")
+out2 = sma(src, len2)
+
+
+o0 = plot(out0, "20", linewidth=1, color=gray, transp=0)
+o1 = plot(out1, "50", linewidth=1, color=blue, transp=0)
+o2 = plot(out2, "200", linewidth=1, color=red, transp=0)
+
