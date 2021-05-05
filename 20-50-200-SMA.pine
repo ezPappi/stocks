@@ -14,7 +14,7 @@ len2 = input(200, minval=1, title="#3 200")
 out2 = sma(src, len2)
 
 
-o0 = plot(out0, "20", linewidth=1, color=gray, transp=0)
+o0 = plot(out0, "20", linewidth=1, color=lime, transp=0)
 o1 = plot(out1, "50", linewidth=1, color=blue, transp=0)
 o2 = plot(out2, "200", linewidth=1, color=red, transp=0)
 
