@@ -1,7 +1,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Show 5 EMA, 20 EMA, 50 SMA, 100 SMA and 200 SMA
 // By ezPappi https://twitter.com/ezPappi
-// @version=0.1
+// @version 0.1
 
 study(title="5EMA-20EMA-50SMA-100SMA-200SMA", shorttitle="ema5_ema10_sma50_sma100_sma200", overlay=true)
 
