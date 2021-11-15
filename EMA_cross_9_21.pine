@@ -1,0 +1,11 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Show 
+// By ezPappi https://twitter.com/ezPappi
+// @version 0.1
+study(title="EMA Cross 9/21", shorttitle="9/21 EMA Cross", overlay=true)
+short = ema(close, 9)
+long = ema(close, 21)
+plot(short, color = red)
+plot(long, color = green)
+bgcolor(color=crossover(short, long) ? green : na, transp=80)
+bgcolor(color=crossunder(short, long) ? orange : na, transp=80)
