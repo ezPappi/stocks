@@ -1,0 +1,27 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Show 9 EMA, 21 EMA, 20 SMA, 50 SMA, 100 SMA and 200 SMA
+// By ezPappi https://twitter.com/ezPappi
+// @version 0.1
+
+study(title="9EMA-21EMA-20SMA-50SMA-100SMA-200SMA", shorttitle="EMA&SMA", overlay=true)
+
+length1=input(9, minval=1,title="EMA 9 Length")
+length2=input(21, minval=1,title="EMA 21 Length")
+length3=input(20, minval=1,title="SMA 20 Length")
+length4=input(50, minval=1,title="SMA 50 Length")
+length5=input(100, minval=1,title="SMA 100 Length")
+length6=input(200,minval=1,title="SMA 200 Length")
+
+sma1=sma(close,length1)
+sma2=sma(close,length2)
+ema3=ema(close,length3)
+sma4=sma(close,length4)
+sma5=sma(close,length5)
+sma6=sma(close,length6)
+
+plot(sma1,color=silver ,linewidth=2, title="9EMA")
+plot(sma2,color=lime ,linewidth=2, title="21EMA")
+plot(ema3,color=purple ,linewidth=2, title="20SMA")
+plot(sma4,color=blue ,linewidth=2, title="50SMA")
+plot(sma5,color=red ,linewidth=2, title="100SMA")
+plot(sma6,color=orange,linewidth=2, title="200SMA")
