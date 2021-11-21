@@ -1,5 +1,6 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Show 9 EMA, 21 EMA, 20 SMA, 50 SMA, 100 SMA and 200 SMA
+// Show bars at 9 and 21 EMA cross overs.
 // By ezPappi https://twitter.com/ezPappi
 // @version 0.1
 
@@ -12,16 +13,19 @@ length4=input(50, minval=1,title="SMA 50 Length")
 length5=input(100, minval=1,title="SMA 100 Length")
 length6=input(200,minval=1,title="SMA 200 Length")
 
-sma1=sma(close,length1)
-sma2=sma(close,length2)
-ema3=ema(close,length3)
+ema1=sma(close,length1)
+ema2=sma(close,length2)
+sma3=ema(close,length3)
 sma4=sma(close,length4)
 sma5=sma(close,length5)
 sma6=sma(close,length6)
 
-plot(sma1,color=silver ,linewidth=2, title="9EMA")
-plot(sma2,color=lime ,linewidth=2, title="21EMA")
-plot(ema3,color=purple ,linewidth=2, title="20SMA")
+plot(ema1,color=silver ,linewidth=2, title="9EMA")
+plot(ema2,color=lime ,linewidth=2, title="21EMA")
+plot(sma3,color=purple ,linewidth=2, title="20SMA")
 plot(sma4,color=blue ,linewidth=2, title="50SMA")
 plot(sma5,color=red ,linewidth=2, title="100SMA")
 plot(sma6,color=orange,linewidth=2, title="200SMA")
+
+bgcolor(color=crossover(ema1, ema2) ? #20B2AA : na, transp=80)
+bgcolor(color=crossunder(ema1, ema2) ? orange : na, transp=80)
