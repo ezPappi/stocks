@@ -1,47 +1,68 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Based on script of © LonesomeTheBlue
-// Trend Lines for RSI, CCI, Momentum, OBV
+// Trend Lines for RSI, CCI, Momentum, OBV and MACD
 // By ezPappi https://twitter.com/ezPappi
-// @version=1
+// @version=5
 study("ezTrend Lines", overlay=false, max_bars_back = 4000)
-indi = input(defval = 'RSI', title = 'Indicator', options = ['RSI', 'CCI', 'OBV', 'Momentum'])
+
+indi = input(defval = 'RSI', title = 'Indicator', options = ['RSI', 'CCI', 'OBV', 'Momentum', 'MACD'])
 Src = input(defval = close, title="Source")
-rsilen = input(defval = 14, title="RSI Length", minval = 1)
+rsilen = input(defval = 12, title="RSI Length", minval = 1)
 ccilen = input(defval = 20, title="CCI Length", minval = 1)
 momlen = input(defval = 10, title="Momentum Length", minval = 1)
 prd = input(defval = 10, title="Pivot Point Period", minval = 5, maxval = 50)
 PPnum = input(defval = 3, title="Number of Pivot Point to check", minval = 2, maxval = 3)
 
+// MACD inputs
+fastLength = input(12, title="MACD Fast Length")
+slowLength = input(26, title="MACD Slow Length")
+signalLength = input(9, title="MACD Signal Length")
+
 Rsi = rsi(Src, rsilen)
 Cci = cci(Src, ccilen)
-Mom = cci(Src, momlen)
+Mom = mom(Src, momlen)
+[macdLine, signalLine, histLine] = macd(Src, fastLength, slowLength, signalLength)
+
 src = indi == 'RSI' ? Rsi :
    indi == 'CCI' ? Cci :
    indi == 'Momentum' ? Mom :
+   indi == 'MACD' ? macdLine :
    obv
 
 hline1 = indi == 'RSI' ? 70 :
-   indi == 'CCI' ? 100 : na
+   indi == 'CCI' ? 100 :
+   indi == 'MACD' ? 4 : na
 
 hline2 = indi == 'RSI' ? 0 :
-   indi == 'CCI' ? 0 : na
+   indi == 'CCI' ? 0 :
+   indi == 'MACD' ? 0 : na
  
 hline3 = indi == 'RSI' ? 30 :
-   indi == 'CCI' ? -100 : na
+   indi == 'CCI' ? -100 :
+   indi == 'MACD' ? -4 : na
    
-h1 = hline(hline1)
-h2 = hline(hline2)
-h3 = hline(hline3)
-fill(h1, h3, color = #9915ff, transp = 90)
-plot(src, linewidth = 1, transp = 0)
+h1 = hline(hline1, color=color.new(#ffffff, 50))
+h2 = hline(hline2, color=color.new(#ffffff, 50))
+h3 = hline(hline3, color=color.new(#ffffff, 50))
+// Custom background for MACD
+macdBackgroundColor = macdLine > signalLine ? color.new(color.gray, 99) : color.new(color.gray, 99)
+bgcolor(indi == 'MACD' ? macdBackgroundColor : na)
 
+fill(h1, h3, color = color.new(#9915fa, 90))
+plot(src, linewidth = 1, color=color.new(color.blue, 0))
 
+// Plot MACD components if MACD is selected
+plot(indi == 'MACD' ? macdLine : na, color=color.new(color.blue, 0), linewidth=2, title="MACD Line")
+plot(indi == 'MACD' ? signalLine : na, color=color.new(color.orange, 0), linewidth=2, title="Signal Line")
+plot(indi == 'MACD' ? histLine : na, style=plot.style_histogram, color=color.new(color.gray, 0), title="Histogram")
+
+// The rest of the code remains the same
 float ph = na, float pl = na
 ph := pivothigh(src, prd, prd)
 pl := pivotlow(src, prd, prd)
 
 getloc(bar_i)=>
-    _ret = bar_index + prd - bar_i 
+    bar_index + prd - bar_i 
     
 t1pos = valuewhen(ph, bar_index, 0)
 t1val = nz(src[getloc(t1pos)])
@@ -77,13 +98,17 @@ gethipos(l1, l2)=>
     _ret2 = l2 == 1 ? t1pos : l2 == 2 ? t2pos : l2 ==3 ? t3pos :  0
     [_ret1, _ret2]
 
-// line definitions
+// Line definitions
 var line l1 = na, var line l2 = na, var line l3 = na
 var line t1 = na, var line t2 = na, var line t3 = na
 
-//delete old lines
-line.delete(l1), line.delete(l2), line.delete(l3)
-line.delete(t1), line.delete(t2), line.delete(t3)
+// Delete old lines
+line.delete(l1)
+line.delete(l2)
+line.delete(l3)
+line.delete(t1)
+line.delete(t2)
+line.delete(t3)
 
 countlinelo = 0
 countlinehi = 0
@@ -144,13 +169,12 @@ for p1 = 1 to PPnum - 1
 
     if up1 != 0 and up2 != 0
         countlinelo := countlinelo + 1
-        l1 := countlinelo == 1 ? line.new(up2 - prd, uv2, up1, uv1) : l1
-        l2 := countlinelo == 2 ? line.new(up2 - prd, uv2, up1, uv1) : l2
-        l3 := countlinelo == 3 ? line.new(up2 - prd, uv2, up1, uv1) : l3
-    
+        l1 := countlinelo == 1 ? line.new(up2 - prd, uv2, up1, uv1, color=color.new(color.blue, 0)) : l1
+        l2 := countlinelo == 2 ? line.new(up2 - prd, uv2, up1, uv1, color=color.new(color.blue, 0)) : l2
+        l3 := countlinelo == 3 ? line.new(up2 - prd, uv2, up1, uv1, color=color.new(color.blue, 0)) : l3
+
     if dp1 != 0 and dp2 != 0
         countlinehi := countlinehi + 1
-        t1 := countlinehi == 1 ? line.new(dp2 - prd, dv2, dp1, dv1) : t1
-        t2 := countlinehi == 2 ? line.new(dp2 - prd, dv2, dp1, dv1) : t2
-        t3 := countlinehi == 3 ? line.new(dp2 - prd, dv2, dp1, dv1) : t3
-           
+        t1 := countlinehi == 1 ? line.new(dp2 - prd, dv2, dp1, dv1, color=color.new(color.red, 0)) : t1
+        t2 := countlinehi == 2 ? line.new(dp2 - prd, dv2, dp1, dv1, color=color.new(color.red, 0)) : t2
+        t3 := countlinehi == 3 ? line.new(dp2 - prd, dv2, dp1, dv1, color=color.new(color.red, 0)) : t3
