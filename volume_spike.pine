@@ -1,11 +1,33 @@
+// @version=5
+indicator("ezVolume Spike Detector", overlay=false)
+
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Identifies significant volume increases on both daily and weekly timeframes. 
 // By ezPappi
-// @version=0.1
-indicator("ezVolume Spike Detector", overlay=false)
+//Key Features:
+//Identifies volume spikes on daily timeframes (current chart)
+//Detects volume spikes on weekly timeframes
+//Highlights when both daily and weekly spikes occur simultaneously
+//Customizable thresholds and lookback periods
+//Visual indicators with color-coded volume bars
+//Labels for significant volume events
+//Alert conditions for trading notifications
+
+//Parameters you can adjust:
+//Daily Volume Threshold (default: 2.0x average volume)
+//Weekly Volume Threshold (default: 1.5x average volume)
+//Daily Average Lookback period (default: 20 bars)
+//Weekly Average Lookback period (default: 10 weeks)
+
+//Visual Indicators:
+//Blue columns: Daily volume spikes
+//Red columns: Weekly volume spikes
+//Purple columns: When both daily and weekly spikes occur together
+//Labels for significant events 
+
 
 // User inputs for customization
-dailyThreshold = input.float(2.0, "Daily Volume Threshold", minval=1.0, step=0.1, tooltip="Minimum ratio of current volume to average volume to consider as a spike (daily)")
+dailyThreshold = input.float(2.0, "Daily Volume Threshold", minval=1.0, step=0.1,tooltip="Minimum ratio of current volume to average volume to consider as a spike (daily)")
 weeklyThreshold = input.float(1.5, "Weekly Volume Threshold", minval=1.0, step=0.1,tooltip="Minimum ratio of current volume to average volume to consider as a spike (weekly)")
 dailyLookback = input.int(20, "Daily Average Lookback", minval=5, maxval=100,tooltip="Number of bars to consider for daily moving average")
 weeklyLookback = input.int(10, "Weekly Average Lookback", minval=3, maxval=50,tooltip="Number of bars to consider for weekly moving average")
