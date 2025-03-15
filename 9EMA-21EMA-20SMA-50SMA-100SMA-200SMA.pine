@@ -1,7 +1,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Show 9 EMA, 21 EMA, 20 SMA, 50 SMA, 100 SMA and 200 SMA
 // Show bars at 9 and 21 EMA cross overs.
-// By ezPappi https://twitter.com/ezPappi
+// By ezPappi
 // @version 0.1
 
 study(title="9EMA-21EMA-20SMA-50SMA-100SMA-200SMA", shorttitle="EMA&SMA", overlay=true)
