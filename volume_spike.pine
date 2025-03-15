@@ -1,0 +1,65 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// Identifies significant volume increases on both daily and weekly timeframes. 
+// By ezPappi
+// @version=0.1
+indicator("ezVolume Spike Detector", overlay=false)
+
+// User inputs for customization
+dailyThreshold = input.float(2.0, "Daily Volume Threshold", minval=1.0, step=0.1, tooltip="Minimum ratio of current volume to average volume to consider as a spike (daily)")
+weeklyThreshold = input.float(1.5, "Weekly Volume Threshold", minval=1.0, step=0.1,tooltip="Minimum ratio of current volume to average volume to consider as a spike (weekly)")
+dailyLookback = input.int(20, "Daily Average Lookback", minval=5, maxval=100,tooltip="Number of bars to consider for daily moving average")
+weeklyLookback = input.int(10, "Weekly Average Lookback", minval=3, maxval=50,tooltip="Number of bars to consider for weekly moving average")
+
+// Function to detect volume spikes
+volumeSpikeDetector(threshold, lookback) =>
+    avgVolume = ta.sma(volume, lookback)
+    volumeRatio = volume / avgVolume
+    volumeRatio >= threshold ? volumeRatio : 0
+
+// Calculate daily volume ratios (on current timeframe)
+dailyVolumeRatio = volumeSpikeDetector(dailyThreshold, dailyLookback)
+dailySpike = dailyVolumeRatio > 0
+
+// Request weekly volume data and calculate weekly spikes
+weeklyVolume = request.security(syminfo.tickerid, "W", volume)
+weeklyAvgVolume = request.security(syminfo.tickerid, "W", ta.sma(volume, weeklyLookback))
+weeklyVolumeRatio = weeklyVolume / weeklyAvgVolume
+weeklySpike = weeklyVolumeRatio >= weeklyThreshold
+
+// Determine the current bar's weekly position (to avoid repeating alerts)
+isFirstBarOfWeek = timeframe.isintraday and (dayofweek != dayofweek[1])
+
+// Colors for visualization
+dailySpikeColor = color.new(color.blue, 20)
+weeklySpikeColor = color.new(color.red, 20)
+bothSpikeColor = color.new(color.purple, 20)
+noSpikeColor = color.new(color.gray, 60)
+
+// Set plot colors based on spike conditions
+plotColor = dailySpike and weeklySpike ? bothSpikeColor : 
+           dailySpike ? dailySpikeColor : 
+           weeklySpike ? weeklySpikeColor : 
+           noSpikeColor
+
+// Plot the daily volume ratio as a histogram
+dailyPlot = plot(dailyVolumeRatio, title="Daily Volume Ratio", color=plotColor, style=plot.style_columns)
+
+// Horizontal threshold line
+plot(dailyThreshold, title="Daily Threshold", color=color.new(color.blue, 50), style=plot.style_line)
+
+// Labels for significant volume spikes
+if dailySpike and weeklySpike
+    label.new(bar_index, dailyVolumeRatio, text="MAJOR\nVOLUME\nSPIKE", 
+              style=label.style_label_down, color=bothSpikeColor, textcolor=color.white, size=size.small)
+else if dailySpike and dailyVolumeRatio >= dailyThreshold * 1.5  // Only show labels for very significant daily spikes
+    label.new(bar_index, dailyVolumeRatio, text="DAILY\nSPIKE", 
+              style=label.style_label_down, color=dailySpikeColor, textcolor=color.white, size=size.small)
+else if weeklySpike and isFirstBarOfWeek
+    label.new(bar_index, dailyVolumeRatio > 0 ? dailyVolumeRatio : dailyThreshold, 
+              text="WEEKLY\nSPIKE", style=label.style_label_down, 
+              color=weeklySpikeColor, textcolor=color.white, size=size.small)
+
+// Alerts
+alertcondition(dailySpike, title="Daily Volume Spike", message="Daily volume spike detected!")
+alertcondition(weeklySpike and isFirstBarOfWeek, title="Weekly Volume Spike", message="Weekly volume spike detected!")
+alertcondition(dailySpike and weeklySpike, title="Major Volume Spike", message="Both daily and weekly volume spikes detected!")
