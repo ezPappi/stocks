@@ -2,7 +2,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // Based on script of © LonesomeTheBlue
 // Show 20, 50 and 200 SMA
-// By ezPappi https://twitter.com/ezPappi
+// By ezPappi
 // @version=0.1
 study(title="20-50-200-SMA", overlay=true)
 src = input(close, title="Source")
